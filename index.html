@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇大冒险 - 功能丰富的网页游戏</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部区域 -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <h1>贪吃蛇大冒险</h1>
+                <span class="version">v2.0</span>
+            </div>
+            <div class="game-info">
+                <div class="score-board">
+                    <div class="score-item">
+                        <span class="score-label">当前分数</span>
+                        <span id="current-score" class="score-value">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">最高分</span>
+                        <span id="high-score" class="score-value">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">长度</span>
+                        <span id="snake-length" class="score-value">3</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 左侧控制面板 -->
+            <aside class="control-panel">
+                <div class="panel-section">
+                    <h2><i class="fas fa-cog"></i> 游戏设置</h2>
+                    
+                    <div class="setting-group">
+                        <h3><i class="fas fa-flag"></i> 游戏模式</h3>
+                        <div class="mode-buttons">
+                            <button class="mode-btn active" data-mode="classic">
+                                <i class="fas fa-star"></i> 经典模式
+                            </button>
+                            <button class="mode-btn" data-mode="timed">
+                                <i class="fas fa-clock"></i> 限时模式
+                            </button>
+                            <button class="mode-btn" data-mode="challenge">
+                                <i class="fas fa-mountain"></i> 挑战模式
+                            </button>
+                            <button class="mode-btn" data-mode="endless">
+                                <i class="fas fa-infinity"></i> 无尽模式
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3><i class="fas fa-tachometer-alt"></i> 难度级别</h3>
+                        <div class="difficulty-buttons">
+                            <button class="diff-btn active" data-difficulty="easy">
+                                <i class="fas fa-baby"></i> 简单
+                            </button>
+                            <button class="diff-btn" data-difficulty="medium">
+                                <i class="fas fa-user"></i> 中等
+                            </button>
+                            <button class="diff-btn" data-difficulty="hard">
+                                <i class="fas fa-skull"></i> 困难
+                            </button>
+                            <button class="diff-btn" data-difficulty="expert">
+                                <i class="fas fa-fire"></i> 专家
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3><i class="fas fa-sliders-h"></i> 游戏控制</h3>
+                        <div class="control-buttons">
+                            <button id="start-btn" class="control-btn start-btn">
+                                <i class="fas fa-play"></i> 开始游戏
+                            </button>
+                            <button id="pause-btn" class="control-btn pause-btn" disabled>
+                                <i class="fas fa-pause"></i> 暂停游戏
+                            </button>
+                            <button id="restart-btn" class="control-btn restart-btn">
+                                <i class="fas fa-redo"></i> 重新开始
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3><i class="fas fa-volume-up"></i> 音效设置</h3>
+                        <div class="sound-controls">
+                            <div class="sound-item">
+                                <span>背景音乐</span>
+                                <input type="range" id="bgm-volume" min="0" max="100" value="50">
+                                <span id="bgm-value">50%</span>
+                            </div>
+                            <div class="sound-item">
+                                <span>游戏音效</span>
+                                <input type="range" id="sfx-volume" min="0" max="100" value="70">
+                                <span id="sfx-value">70%</span>
+                            </div>
+                            <div class="sound-toggle">
+                                <button id="mute-btn" class="sound-btn">
+                                    <i class="fas fa-volume-up"></i> 静音
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h2><i class="fas fa-trophy"></i> 排行榜</h2>
+                    <div class="leaderboard">
+                        <div class="leaderboard-header">
+                            <span>排名</span>
+                            <span>玩家</span>
+                            <span>分数</span>
+                        </div>
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <!-- 排行榜条目将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 游戏画布区域 -->
+            <div class="game-area">
+                <div class="game-canvas-container">
+                    <canvas id="game-canvas" width="800" height="600"></canvas>
+                    
+                    <!-- 游戏状态覆盖层 -->
+                    <div id="game-overlay" class="game-overlay">
+                        <div class="overlay-content">
+                            <h2 id="overlay-title">贪吃蛇大冒险</h2>
+                            <p id="overlay-message">准备好开始冒险了吗？</p>
+                            <div class="overlay-controls">
+                                <button id="overlay-start" class="overlay-btn start-btn">
+                                    <i class="fas fa-play"></i> 开始游戏
+                                </button>
+                                <button id="overlay-help" class="overlay-btn help-btn">
+                                    <i class="fas fa-question-circle"></i> 游戏说明
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 游戏信息显示 -->
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-apple-alt"></i>
+                        <span>食物数量: <span id="food-count">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>游戏速度: <span id="game-speed">中等</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span>游戏时间: <span id="game-time">00:00</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-heart"></i>
+                        <span>生命值: <span id="lives-count">3</span></span>
+                    </div>
+                </div>
+
+                <!-- 控制说明 -->
+                <div class="controls-info">
+                    <h3><i class="fas fa-keyboard"></i> 控制说明</h3>
+                    <div class="controls-grid">
+                        <div class="control-key">
+                            <kbd>↑</kbd> <span>向上移动</span>
+                        </div>
+                        <div class="control-key">
+                            <kbd>↓</kbd> <span>向下移动</span>
+                        </div>
+                        <div class="control-key">
+                            <kbd>←</kbd> <span>向左移动</span>
+                        </div>
+                        <div class="control-key">
+                            <kbd>→</kbd> <span>向右移动</span>
+                        </div>
+                        <div class="control-key">
+                            <kbd>空格</kbd> <span>暂停/继续</span>
+                        </div>
+                        <div class="control-key">
+                            <kbd>R</kbd> <span>重新开始</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧信息面板 -->
+            <aside class="info-panel">
+                <div class="panel-section">
+                    <h2><i class="fas fa-info-circle"></i> 游戏说明</h2>
+                    <div class="game-instructions">
+                        <h3>游戏目标</h3>
+                        <p>控制贪吃蛇吃掉食物，避免撞到墙壁或自己的身体，获得尽可能高的分数。</p>
+                        
+                        <h3>特殊食物</h3>
+                        <div class="food-types">
+                            <div class="food-type">
+                                <div class="food-icon normal"></div>
+                                <span>普通食物：+10分，长度+1</span>
+                            </div>
+                            <div class="food-type">
+                                <div class="food-icon double"></div>
+                                <span>双倍食物：+20分，长度+2</span>
+                            </div>
+                            <div class="food-type">
+                                <div class="food-icon speed"></div>
+                                <span>加速食物：暂时提高速度</span>
+                            </div>
+                            <div class="food-type">
+                                <div class="food-icon slow"></div>
+                                <span>减速食物：暂时降低速度</span>
+                            </div>
+                        </div>
+
+                        <h3>游戏模式说明</h3>
+                        <ul class="mode-list">
+                            <li><strong>经典模式：</strong>传统贪吃蛇玩法，撞墙或自身即结束</li>
+                            <li><strong>限时模式：</strong>在3分钟内获得最高分数</li>
+                            <li><strong>挑战模式：</strong>地图中有障碍物需要躲避</li>
+                            <li><strong>无尽模式：</strong>蛇可以穿过边界到达另一侧</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h2><i class="fas fa-chart-line"></i> 游戏统计</h2>
+                    <div class="game-statistics">
+                        <div class="stat-row">
+                            <span>总游戏次数</span>
+                            <span id="total-games">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>总游戏时间</span>
+                            <span id="total-time">00:00</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>平均分数</span>
+                            <span id="avg-score">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>最长蛇身</span>
+                            <span id="max-length">3</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>食物总数</span>
+                            <span id="total-food">0</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 底部区域 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-code"></i> 技术信息</h3>
+                    <p>使用纯HTML5 Canvas + JavaScript开发</p>
+                    <p>支持现代浏览器和移动设备</p>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-share-alt"></i> 分享游戏</h3>
+                    <div class="social-buttons">
+                        <button class="social-btn">
+                            <i class="fab fa-github"></i> GitHub
+                        </button>
+                        <button class="social-btn">
+                            <i class="fas fa-link"></i> 复制链接
+                        </button>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-user"></i> 开发者</h3>
+                    <p>王语嫣 - 专业助理</p>
+                    <p>为老板精心打造的贪吃蛇游戏</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 贪吃蛇大冒险 - 版权所有 | 版本 2.0 | 最后更新: 2026-03-25</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 帮助模态框 -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-question-circle"></i> 游戏帮助</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>基本操作</h3>
+                <p>使用键盘方向键控制贪吃蛇的移动方向。蛇会持续向前移动，你需要引导它吃掉食物。</p>
+                
+                <h3>游戏规则</h3>
+                <ul>
+                    <li>每吃一个普通食物得10分，蛇身长度增加1</li>
+                    <li>撞到墙壁或自己的身体会导致游戏结束</li>
+                    <li>在无尽模式下，蛇可以穿过边界到达另一侧</li>
+                    <li>挑战模式中有障碍物需要躲避</li>
+                </ul>
+                
+                <h3>特殊功能</h3>
+                <p>游戏中会出现不同类型的食物，具有不同的效果：</p>
+                <ul>
+                    <li><strong>双倍食物：</strong>红色，提供双倍分数和长度</li>
+                    <li><strong>加速食物：</strong>黄色，暂时提高蛇的移动速度</li>
+                    <li><strong>减速食物：</strong>蓝色，暂时降低蛇的移动速度</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn close-modal">关闭帮助</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结束模态框 -->
+    <div id="gameover-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-gamepad"></i> 游戏结束</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="gameover-stats">
+                    <div class="stat-box">
+                        <h3>最终分数</h3>
+                        <p id="final-score" class="big-number">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>蛇身长度</h3>
+                        <p id="final-length" class="big-number">3</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>游戏时间</h3>
+                        <p id="final-time" class="big-number">00:00</p>
+                    </div>
+                </div>
+                <div class="gameover-message">
+                    <p id="gameover-text">再接再厉！</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="play-again-btn" class="modal-btn start-btn">再玩一次</button>
+                <button id="back-to-menu-btn" class="modal-btn">返回主菜单</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音频元素 -->
+    <audio id="bgm" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-game-show-suspense-waiting-667.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="eat-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="gameover-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-game-over-470.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="move-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-plastic-bubble-click-1124.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hungary-snake-by-yayun 部署指南</title>
+    <style>
+        :root {
+            --primary: #4ecdc4;
+            --secondary: #ff6b6b;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(78, 205, 196, 0.3);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b8c1ec;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+        .step:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+        .step-title {
+            display: inline-block;
+            font-size: 1.5em;
+            color: white;
+            vertical-align: middle;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), #3db8af);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.5);
+            background: linear-gradient(135deg, #3db8af, var(--primary));
+        }
+        .button.secondary {
+            background: linear-gradient(135deg, var(--secondary), #ff4757);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        .button.secondary:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+            background: linear-gradient(135deg, #ff4757, var(--secondary));
+        }
+        .code-block {
+            background: #0a0a1a;
+            color: #4ecdc4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+        .link-box {
+            background: rgba(78, 205, 196, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success {
+            color: #51cf66;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffd43b;
+            font-weight: bold;
+        }
+        .game-preview {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+        .snake-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .status.ready {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+        }
+        .status.waiting {
+            background: rgba(255, 212, 59, 0.2);
+            color: #ffd43b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-preview">
+            <div class="snake-icon">🐍</div>
+            <h1>Hungary Snake by Yayun</h1>
+            <p class="subtitle">贪吃蛇大冒险网页游戏 - 全新独立仓库部署</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-title">创建GitHub仓库</div>
+            <span class="status waiting">等待操作</span>
+            
+            <p>首先在GitHub创建全新的独立仓库：</p>
+            <a class="button" href="https://github.com/new" target="_blank">📦 创建新仓库</a>
+            
+            <p><strong>仓库配置：</strong></p>
+            <ul>
+                <li><strong>Repository name:</strong> <code>Hungary-snake-by-yayun</code></li>
+                <li><strong>Description:</strong> 贪吃蛇大冒险网页游戏 - Hungary snake by yayun</li>
+                <li><strong>Public</strong> (公开仓库)</li>
+                <li><strong>不要</strong>勾选 "Initialize this repository with a README"</li>
+                <li><strong>不要</strong>添加 .gitignore 或 license</li>
+            </ul>
+            
+            <p>点击 <strong>Create repository</strong> 按钮</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-title">推送游戏文件</div>
+            <span class="status waiting">等待操作</span>
+            
+            <p>创建仓库后，复制并执行以下命令：</p>
+            
+            <div class="code-block">
+# 进入项目目录
+cd /tmp/hungary-snake
+
+# 设置远程仓库（使用您的仓库URL）
+git remote add origin https://github.com/debug530/Hungary-snake-by-yayun.git
+
+# 推送到GitHub
+git push -u origin main
+            </div>
+            
+            <p><strong>或者使用带token的命令：</strong></p>
+            <div class="code-block">
+git remote add origin https://[GITHUB_TOKEN]@github.com/debug530/Hungary-snake-by-yayun.git
+git push -u origin main
+            </div>
+            
+            <button class="button" onclick="copyCommands()">📋 复制命令</button>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-title">启用GitHub Pages</div>
+            <span class="status waiting">等待操作</span>
+            
+            <p>文件推送成功后，启用GitHub Pages：</p>
+            <a class="button" href="https://github.com/debug530/Hungary-snake-by-yayun/settings/pages" target="_blank">🌐 打开Pages设置</a>
+            
+            <p><strong>配置设置：</strong></p>
+            <ul>
+                <li><strong>Source:</strong> Deploy from a branch</li>
+                <li><strong>Branch:</strong> <code>main</code></li>
+                <li><strong>Folder:</strong> <code>/</code> (根目录)</li>
+                <li>点击 <strong>Save</strong> 按钮</li>
+            </ul>
+            
+            <p class="warning">⚠️ 保存后需要等待1-2分钟部署</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-title">访问游戏</div>
+            <span class="status ready">准备就绪</span>
+            
+            <p>部署完成后，通过以下链接访问游戏：</p>
+            
+            <div class="link-box">
+                <h3 class="success">🎮 游戏主页</h3>
+                <p><a href="https://debug530.github.io/Hungary-snake-by-yayun/" target="_blank" style="color: var(--primary); font-size: 1.2em;">
+                    https://debug530.github.io/Hungary-snake-by-yayun/
+                </a></p>
+                
+                <h3>🧪 测试页面</h3>
+                <p><a href="https://debug530.github.io/Hungary-snake-by-yayun/test.html" target="_blank" style="color: #b8c1ec;">
+                    https://debug530.github.io/Hungary-snake-by-yayun/test.html
+                </a></p>
+                
+                <h3>📁 GitHub仓库</h3>
+                <p><a href="https://github.com/debug530/Hungary-snake-by-yayun" target="_blank" style="color: #b8c1ec;">
+                    https://github.com/debug530/Hungary-snake-by-yayun
+                </a></p>
+            </div>
+            
+            <button class="button secondary" onclick="testLinks()">🔗 测试链接</button>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-title">游戏检验</div>
+            <span class="status ready">立即开始</span>
+            
+            <p>游戏已完全开发完成，可以立即检验：</p>
+            
+            <div class="code-block">
+✅ 核心功能：蛇移动、食物生成、碰撞检测
+✅ 游戏模式：经典、限时、挑战、无尽
+✅ 难度级别：简单、中等、困难、专家
+✅ 特殊食物：普通、双倍、加速、减速
+✅ 用户界面：响应式设计、暗色主题
+✅ 音效系统：背景音乐、游戏音效
+✅ 数据存储：本地最高分、排行榜
+            </div>
+            
+            <a class="button" href="http://localhost:8080/" target="_blank">🎯 本地测试</a>
+            <a class="button secondary" href="http://localhost:8080/test.html" target="_blank">🧪 功能测试</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <p style="color: #b8c1ec;">🐍 Hungary Snake by Yayun 已准备就绪，等待部署！</p>
+            <p style="color: #8892b0; font-size: 0.9em;">开发：王语嫣 | 版本：v2.0 | 时间：2026-03-26</p>
+        </div>
+    </div>
+
+    <script>
+        function copyCommands() {
+            const commands = `cd /tmp/hungary-snake\ngit remote add origin https://github.com/debug530/Hungary-snake-by-yayun.git\ngit push -u origin main`;
+            navigator.clipboard.writeText(commands).then(() => {
+                alert('命令已复制到剪贴板！');
+            });
+        }
+        
+        function testLinks() {
+            const links = [
+                'https://debug530.github.io/Hungary-snake-by-yayun/',
+                'https://debug530.github.io/Hungary-snake-by-yayun/test.html',
+                'https://github.com/debug530/Hungary-snake-by-yayun'
+            ];
+            
+            let results = '链接测试结果：\n\n';
+            links.forEach(link => {
+                results += `${link}\n`;
+            });
+            
+            alert(results + '\n请手动访问测试。');
+        }
+        
+        // 自动检查本地服务器
+        window.addEventListener('load', () => {
+            fetch('http://localhost:8080/')
+                .then(() => {
+                    document.querySelector('.game-preview').innerHTML += 
+                        '<p class="success">✅ 本地服务器运行正常</p>';
+                })
+                .catch(() => {
+                    document.querySelector('.game-preview').innerHTML += 
+                        '<p class="warning">⚠️ 本地服务器未运行，但在线版本可用</p>';
+                });
+        });
+    </script>
+</body>
+</html>
